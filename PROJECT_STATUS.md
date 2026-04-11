@@ -22,6 +22,7 @@
 - Ran `pnpm check` successfully in Docker and confirmed `pnpm build` generates static output for `/` and `/about`.
 - Fixed the `pnpm` ignored build-script warning by allowing `sharp` and `unrs-resolver` via `pnpm.onlyBuiltDependencies`.
 - Updated the Docker image to preactivate `pnpm@10.33.0`, removing the repeated Corepack download and update-notice startup noise.
+- Added a step-by-step GitHub hardening guide in `docs/github-hardening-checklist.md`, organized with free protections first and paid private-repo options clearly separated.
 
 ## In Progress
 - None.
@@ -30,6 +31,7 @@
 - Decide whether to regenerate the local ignored `.env` so it only contains `APP_PORT`.
 - Replace the generic starter copy and metadata with project-specific site content.
 - Choose whether to keep using `docker compose -p mvp-static-site ...` manually or bake a project name into the local workflow.
+- Work through `docs/github-hardening-checklist.md` and apply the relevant public, private, or organization settings in GitHub.
 
 ## Blockers
 - None.
@@ -56,6 +58,6 @@
 - Build: pnpm build
 
 ## Notes for Next Session
-- What was just finished: Verified `pnpm check`, `pnpm build`, static export output, and app startup in Docker; fixed the build-script warning; and confirmed the app runs at `http://localhost:3000` in an isolated Compose project.
-- What should happen next: Continue replacing starter content and, if helpful, simplify the operator workflow around the chosen Docker Compose project name.
+- What was just finished: Added `docs/github-hardening-checklist.md` with a free-first GitHub security walkthrough, plus clear public/private and organization-specific paid upgrade notes.
+- What should happen next: Apply the checklist in GitHub, then continue replacing starter content and, if helpful, simplify the operator workflow around the chosen Docker Compose project name.
 - Risks / caution areas: Keep using the isolated Compose project name for this repo so old template containers, networks, and volumes remain untouched.
