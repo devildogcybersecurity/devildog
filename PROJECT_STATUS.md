@@ -23,6 +23,7 @@
 - Fixed the `pnpm` ignored build-script warning by allowing `sharp` and `unrs-resolver` via `pnpm.onlyBuiltDependencies`.
 - Updated the Docker image to preactivate `pnpm@10.33.0`, removing the repeated Corepack download and update-notice startup noise.
 - Added a step-by-step GitHub hardening guide in `docs/github-hardening-checklist.md`, organized with free protections first and paid private-repo options clearly separated.
+- Repaired the GitHub Actions CI workflow by removing the hard-coded pnpm action version so the workflow now follows the repo's `packageManager` version.
 
 ## In Progress
 - None.
@@ -32,6 +33,7 @@
 - Replace the generic starter copy and metadata with project-specific site content.
 - Choose whether to keep using `docker compose -p mvp-static-site ...` manually or bake a project name into the local workflow.
 - Work through `docs/github-hardening-checklist.md` and apply the relevant public, private, or organization settings in GitHub.
+- Let the updated CI rerun on the open PR and confirm the workflow now installs pnpm from `package.json` without a version conflict.
 
 ## Blockers
 - None.
@@ -58,6 +60,6 @@
 - Build: pnpm build
 
 ## Notes for Next Session
-- What was just finished: Added `docs/github-hardening-checklist.md` with a free-first GitHub security walkthrough, plus clear public/private and organization-specific paid upgrade notes.
-- What should happen next: Apply the checklist in GitHub, then continue replacing starter content and, if helpful, simplify the operator workflow around the chosen Docker Compose project name.
+- What was just finished: Added `docs/github-hardening-checklist.md` and fixed the CI workflow's pnpm version mismatch by removing the outdated `pnpm/action-setup` version pin.
+- What should happen next: Confirm the PR checks pass with the updated workflow, then apply the checklist in GitHub and continue replacing starter content.
 - Risks / caution areas: Keep using the isolated Compose project name for this repo so old template containers, networks, and volumes remain untouched.
