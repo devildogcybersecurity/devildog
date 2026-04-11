@@ -1,0 +1,10 @@
+node_modules
+.pnpm-store
+.next
+out
+coverage
+.git
+.env
+.env.local
+pnpm-lock.yaml
+tsconfig.tsbuildinfo

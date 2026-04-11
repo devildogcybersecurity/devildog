@@ -1,0 +1,7 @@
+# Codex Kickoff Commands
+
+## Secure Production Repo
+Read AGENTS.md and PROJECT_STATUS.md first. Summarize the current project state, identify the next highest-priority tasks, update PROJECT_STATUS.md with your plan, and then bootstrap the secure production template according to AGENTS.md. Start with the monorepo structure, shared configuration, Docker setup, and the initial web and api applications. As you complete major milestones, keep PROJECT_STATUS.md current.
+
+## MVP Repo
+Read AGENTS.md and PROJECT_STATUS.md first. Summarize the current project state, identify the next highest-priority tasks, update PROJECT_STATUS.md with your plan, and then bootstrap the MVP template according to AGENTS.md. Start with the Next.js application structure, Docker setup, authentication foundation, and database foundation. As you complete major milestones, keep PROJECT_STATUS.md current.
