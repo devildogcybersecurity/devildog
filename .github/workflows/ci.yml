@@ -9,10 +9,6 @@ on:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    env:
-      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/mvp_template?schema=public
-      NEXTAUTH_URL: http://localhost:3000
-      NEXTAUTH_SECRET: ci-template-secret
 
     steps:
       - name: Check out repository

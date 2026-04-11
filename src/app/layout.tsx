@@ -1,9 +1,11 @@
 import type { Metadata } from 'next';
 import '@/styles/globals.css';
 
+import { siteMetadata } from '@/features/site/siteContent';
+
 export const metadata: Metadata = {
-  title: 'MVP Template',
-  description: 'Fast, clean MVP starter built on Next.js',
+  title: siteMetadata.title,
+  description: siteMetadata.description,
 };
 
 export default function RootLayout({

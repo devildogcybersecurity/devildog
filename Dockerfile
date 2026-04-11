@@ -5,9 +5,7 @@ ENV PATH="$PNPM_HOME:$PATH"
 
 WORKDIR /app
 
-RUN apt-get update \
-  && apt-get install -y --no-install-recommends openssl \
-  && rm -rf /var/lib/apt/lists/* \
-  && corepack enable
+RUN corepack enable
+RUN corepack prepare pnpm@10.33.0 --activate
 
 CMD ["bash"]

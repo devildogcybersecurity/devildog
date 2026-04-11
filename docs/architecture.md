@@ -1,16 +1,16 @@
 # Architecture Overview
 
 ## Goal
-Provide a fast-moving MVP template using one Next.js application with clean internal boundaries and a clear path to future separation.
+Provide a fast-moving static website template using one Next.js application with clean internal boundaries and a straightforward static export path.
 
 ## Target Structure
 - src/app: routes and route groups
 - src/features: domain organization
-- src/server: server-side services and repositories
-- prisma/: schema and migrations
+- src/components: reusable UI
+- src/styles: global styling
 - docker/: local development assets
 
 ## Notes
-- Database access remains server-only.
-- UI components should not contain durable business logic.
-- Keep the codebase easy to evolve into a more layered architecture later.
+- Prefer public pages and shared content modules over server-side orchestration.
+- UI components should not contain durable content or navigation data that belongs in feature modules.
+- Keep the codebase easy to evolve, but do not introduce auth, database, or API scaffolding until a project actually needs it.

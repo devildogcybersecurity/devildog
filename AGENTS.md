@@ -1,7 +1,7 @@
 # AGENTS.md
 
 ## Project Identity
-This repository is the MVP template. It is optimized for fast delivery while staying clean, understandable, and upgrade-friendly. It intentionally reduces architectural complexity compared to the secure production template.
+This repository is the static site template. It is optimized for fast delivery while staying clean, understandable, and easy to restyle or extend.
 
 ## Core Stack
 - Node.js 24.x LTS
@@ -10,15 +10,8 @@ This repository is the MVP template. It is optimized for fast delivery while sta
 - React 19.x
 - Next.js 16.x
 - Tailwind CSS 4.x
-- Prisma ORM
-- PostgreSQL 18.x
-- Auth.js
-- OAuth providers:
-  - Microsoft Entra ID
-  - Google
-  - Apple
 - Docker for local development
-- Terraform-ready hosting path, but minimal complexity for the MVP
+- Static export hosting path with minimal runtime complexity
 
 ## Cross-Platform Requirement
 Target local development for both macOS and Windows 11.
@@ -27,14 +20,13 @@ Prefer cross-platform commands and avoid shell-specific assumptions unless clear
 Ensure compatibility with Docker Desktop on both macOS and Windows.
 
 ## Architecture Rules
-This repository is intentionally simpler than the secure template.
+This repository is intentionally simple.
 
 ### Single App Model
 - Use one Next.js application
-- Marketing site and app UI live together
-- Route handlers, server actions, and server-side services may live in the same repo
-- Database access happens from the server runtime only
-- Keep business logic out of presentation components even in the MVP
+- Keep the baseline focused on public website routes
+- Prefer static content and reusable UI over server-side scaffolding
+- Keep business and content structure out of presentation-heavy page files
 
 ## Required Repo Shape
 The repository should evolve toward this structure:
@@ -42,18 +34,10 @@ The repository should evolve toward this structure:
 - src/
   - app/
     - (marketing)/
-    - (app)/
-    - api/
   - components/
     - ui/
   - features/
-  - lib/
-  - server/
-    - services/
-    - repositories/
   - styles/
-  - tests/
-- prisma/
 - docker/
 - docs/
 
@@ -63,17 +47,16 @@ The repository should evolve toward this structure:
 - Use PascalCase for React components
 - Use camelCase for variables and functions
 - Use kebab-case for route folders
-- Use clear names for services, repositories, and validators
-- Avoid putting large business logic directly inside page components
+- Use clear names for content modules, sections, and UI primitives
+- Avoid putting large content structures directly inside page components
 - Avoid vague utils dumping grounds
 
-## MVP Discipline Rules
+## Static Site Discipline Rules
 This is fast-moving, not sloppy.
 - Keep the architecture simple
-- Keep boundaries clear inside the single app
-- Validate inputs at boundaries
-- Keep DB access server-only
-- Keep a clean migration path toward future layer separation
+- Prefer static-first implementations
+- Add runtime complexity only when a real feature requires it
+- Keep a clean path toward future expansion without prebuilding unused auth, database, or API layers
 
 ## Figma Rules
 Follow docs/figma-workflow.md.
@@ -92,12 +75,11 @@ Favor speed with clean structure over over-engineering.
 ## Initial Build Priorities
 When bootstrapping this repository, build in this order:
 1. Next.js app structure
-2. Docker / compose local environment
-3. Prisma and PostgreSQL foundation
-4. Auth foundation
-5. Feature folder structure
-6. Testing foundation
-7. Minimal Terraform-ready hosting skeleton
+2. Public page and content foundation
+3. Reusable UI structure
+4. Docker / compose local environment
+5. Testing foundation
+6. Static deployment readiness
 
 ## Commands Policy
 Prefer commands that work cross-platform.

@@ -2,5 +2,5 @@
 
 Organize domain logic in feature folders to keep app routes lightweight.
 
-The template includes `projects/projectSlug.ts` as a minimal example of feature-level logic that
-can be reused by services without coupling business rules directly to routes or repositories.
+The template includes `site/siteContent.ts` as a minimal example of feature-level content that can
+be reused across public pages without coupling copy and navigation directly to route files.
