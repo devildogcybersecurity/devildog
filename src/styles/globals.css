@@ -1,10 +1,70 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Open+Sans:wght@400;500;600;700&display=swap');
 @import 'tailwindcss';
 
 :root {
   color-scheme: light;
+  --dd-red: #6c0404;
+  --dd-red-deep: #2a0505;
+  --dd-red-bright: #b01116;
+  --dd-cream: #f8f1ef;
+  --dd-copy: #18181b;
+  --dd-muted: #5b5560;
+  --dd-border: rgba(108, 4, 4, 0.14);
+  --dd-ink: #090909;
+  --font-body: 'Open Sans', sans-serif;
+  --font-display: 'Montserrat', sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 body {
   margin: 0;
   min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(176, 17, 22, 0.08), transparent 24%),
+    linear-gradient(180deg, #fcf8f6 0%, var(--dd-cream) 100%);
+  color: var(--dd-copy);
+  font-family: var(--font-body);
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+summary {
+  list-style: none;
+}
+
+summary::marker {
+  content: '';
+}
+
+summary::-webkit-details-marker {
+  display: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+}
+
+img {
+  display: block;
+}
+
+::selection {
+  background: rgba(176, 17, 22, 0.82);
+  color: #fff;
 }

@@ -1,52 +1,77 @@
+import Image from 'next/image';
 import Link from 'next/link';
 
-import { AppShell } from '@/components/ui/AppShell';
-import { aboutPrinciples, navigationLinks } from '@/features/site/siteContent';
+import { aboutPrinciples, storyContent } from '@/features/site/siteContent';
 
 export default function MarketingPage() {
   return (
-    <main className="min-h-screen bg-neutral-50 py-8">
-      <AppShell
-        title="About This Template"
-        description="A public-only starter for shipping brochure sites, landing pages, and content-led websites."
-        actions={
-          <Link
-            href={navigationLinks[0].href}
-            className="rounded-md border border-neutral-300 px-3 py-2 text-sm font-medium text-neutral-700 transition hover:border-neutral-400 hover:bg-neutral-50"
-          >
-            Back home
-          </Link>
-        }
-      >
-        <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
-          <section className="rounded-xl border border-neutral-200 bg-white p-6 shadow-sm">
-            <p className="text-base leading-7 text-neutral-700">
-              This repository is meant to be forked into a static website project. It keeps the
-              moving pieces small so teams can focus on content, design, and deployment instead of
-              scaffolding services they do not need yet.
-            </p>
-
-            <div className="mt-6 space-y-4">
-              {aboutPrinciples.map((item) => (
-                <article key={item.title} className="rounded-lg border border-neutral-200 p-4">
-                  <h2 className="text-lg font-semibold text-neutral-900">{item.title}</h2>
-                  <p className="mt-2 text-sm leading-6 text-neutral-600">{item.description}</p>
-                </article>
-              ))}
-            </div>
-          </section>
-
-          <aside className="rounded-xl border border-neutral-200 bg-white p-6 shadow-sm">
-            <h2 className="text-lg font-semibold text-neutral-900">Included by default</h2>
-            <ul className="mt-4 space-y-3 text-sm text-neutral-600">
-              <li>Next.js App Router for public pages.</li>
-              <li>Tailwind CSS styling foundations.</li>
-              <li>Vitest-based starter test coverage.</li>
-              <li>Docker support for app-only local development.</li>
-            </ul>
-          </aside>
+    <main className="py-20 sm:py-24">
+      <section className="mx-auto w-full max-w-7xl px-6">
+        <div className="rounded-[2.25rem] bg-[linear-gradient(135deg,var(--dd-red),var(--dd-red-deep))] px-8 py-12 text-white shadow-[0_26px_70px_rgba(108,4,4,0.24)] sm:px-12">
+          <p className="text-sm font-semibold uppercase tracking-[0.28em] text-white/60">
+            About DevilDog
+          </p>
+          <h1 className="mt-4 max-w-4xl text-4xl font-extrabold tracking-tight sm:text-5xl">
+            A cybersecurity partner shaped by mission discipline, technical depth, and long-term accountability.
+          </h1>
+          <p className="mt-6 max-w-3xl text-base leading-8 text-white/80 sm:text-lg">
+            The original Blazor site presents DevilDog as a veteran-led cybersecurity company with
+            strong roots in compliance, infrastructure hardening, and training. This Next.js
+            version keeps that core identity while reorganizing it into a static, Tailwind-first
+            structure that is easier to extend.
+          </p>
+          <div className="mt-8">
+            <Link
+              href="/"
+              className="inline-flex rounded-full border border-white/20 px-5 py-3 text-sm font-semibold uppercase tracking-[0.16em] text-white transition hover:bg-white/10"
+            >
+              Back Home
+            </Link>
+          </div>
         </div>
-      </AppShell>
+      </section>
+
+      <section className="mx-auto mt-12 grid w-full max-w-7xl gap-6 px-6 lg:grid-cols-3">
+        {aboutPrinciples.map((item) => (
+          <article
+            key={item.title}
+            className="h-full rounded-[1.75rem] border border-[color:var(--dd-border)] bg-white p-7 text-[color:var(--dd-copy)] shadow-[0_18px_40px_rgba(15,23,42,0.08)]"
+          >
+            <h2 className="text-2xl font-bold text-[color:var(--dd-red)]">
+              {item.title}
+            </h2>
+            <p className="mt-4 text-sm leading-7 text-[color:var(--dd-muted)]">
+              {item.description}
+            </p>
+          </article>
+        ))}
+      </section>
+
+      <section className="mx-auto mt-12 grid w-full max-w-7xl gap-10 px-6 lg:grid-cols-[.95fr_1.05fr] lg:items-center lg:py-4">
+        <div className="overflow-hidden rounded-[2rem] border border-[color:var(--dd-border)] bg-white shadow-[0_18px_50px_rgba(15,23,42,0.12)]">
+          <Image
+            src={storyContent.imageSrc}
+            alt={storyContent.imageAlt}
+            width={1200}
+            height={900}
+            className="h-full w-full object-cover"
+          />
+        </div>
+
+        <div className="rounded-[2rem] border border-[color:var(--dd-border)] bg-white p-8 shadow-[0_18px_50px_rgba(15,23,42,0.08)] sm:p-10">
+          <p className="text-sm font-semibold uppercase tracking-[0.28em] text-[color:var(--dd-red-bright)]">
+            {storyContent.subtitle}
+          </p>
+          <h2 className="mt-3 text-4xl font-extrabold tracking-tight text-[color:var(--dd-copy)]">
+            {storyContent.title}
+          </h2>
+          <div className="mt-6 space-y-5 text-base leading-8 text-[color:var(--dd-muted)]">
+            {storyContent.paragraphs.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
+          </div>
+        </div>
+      </section>
     </main>
   );
 }

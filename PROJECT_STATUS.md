@@ -4,10 +4,10 @@
 - Name: mvp-template
 - Template Type: Static website baseline
 - Current Branch: main
-- Last Updated: 2026-04-11
+- Last Updated: 2026-04-12
 
 ## Current Phase
-- Static-site baseline verified in Docker
+- Public marketing site with SendGrid-ready contact workflow verified in Docker
 
 ## Completed
 - Reviewed repository guidance, architecture notes, and current code structure.
@@ -22,15 +22,31 @@
 - Ran `pnpm check` successfully in Docker and confirmed `pnpm build` generates static output for `/` and `/about`.
 - Fixed the `pnpm` ignored build-script warning by allowing `sharp` and `unrs-resolver` via `pnpm.onlyBuiltDependencies`.
 - Updated the Docker image to preactivate `pnpm@10.33.0`, removing the repeated Corepack download and update-notice startup noise.
+- Aligned Docker Compose so `APP_PORT` now controls both the published host port and the internal Next.js dev server port, keeping local browser URLs and container logs consistent.
+- Ported the DevilDog homepage look from the Blazor app into Tailwind-native React components, copied the required static assets into this repo, updated site metadata and the About page, and enabled unoptimized local images for static export.
+- Ported the remaining DevilDog service, compliance, story, and team pages into a reusable catch-all static route system, rewired the site navigation and homepage cards to those new routes, expanded the local asset set, and tightened light/dark contrast handling so text stays readable against non-white surfaces.
 - Added a step-by-step GitHub hardening guide in `docs/github-hardening-checklist.md`, organized with free protections first and paid private-repo options clearly separated.
 - Repaired the GitHub Actions CI workflow by removing the hard-coded pnpm action version so the workflow now follows the repo's `packageManager` version.
+- Polished the shared DevilDog UI so dark surfaces use light text, light surfaces use dark text, menu disclosure controls no longer fall back to native dark markers, and the home/about side-by-side panels sit with better centered spacing.
+- Re-ran `pnpm check` and `pnpm build` in Docker after the polish pass and confirmed the static export still succeeds for 29 pages.
+- Fixed the remaining unreadable Contact DevilDog CTA treatment, rewired sitewide contact links to a dedicated `/contact` page, and added a styled Tailwind contact form with client-side validation for name, email, company name, and message.
+- Added a server-side `/api/contact` route that validates submissions and sends email through SendGrid using server-only environment variables, plus new tests for the shared contact validation logic.
+- Updated `.env.example`, Docker Compose, and the Next.js build configuration so the app can accept SendGrid settings in development and production and compile a secure contact endpoint.
+- Re-ran `pnpm check` and `pnpm build` in Docker after the contact workflow milestone and confirmed the build now includes `/contact` plus a dynamic `/api/contact` route.
+- Added Cloudflare Turnstile protection to the contact form with a client-rendered verification widget, token-aware validation, and server-side Turnstile `siteverify` checks that must pass before SendGrid email is sent.
+- Expanded the contact validation tests for Turnstile token requirements and updated `.env.example` plus Docker Compose with safe Turnstile placeholders instead of tracked secrets.
+- Re-ran `pnpm check` and `pnpm build` in Docker after the Turnstile milestone and confirmed the contact page still builds cleanly with the protected `/api/contact` route.
+- Removed the extra "What Happens Next" panel from the contact page, simplified the top navigation by dropping the duplicate Home link, and fixed the shared Contact DevilDog CTA styling so button text stays readable on the footer and page-level Next Step panels.
+- Re-ran `pnpm check` and `pnpm build` in Docker after the contact-page and CTA cleanup and confirmed the site still builds cleanly with the protected `/api/contact` route.
 
 ## In Progress
 - None.
 
 ## Next Up
+- Add the real `SENDGRID_API_KEY`, `SENDGRID_FROM_EMAIL`, and `CONTACT_EMAIL_TO` values in the deployment environment and verify an end-to-end test submission.
+- Add Cloudflare Turnstile site and secret keys in the deployment environment and verify the contact form blocks invalid or missing tokens before email is sent.
 - Decide whether to regenerate the local ignored `.env` so it only contains `APP_PORT`.
-- Replace the generic starter copy and metadata with project-specific site content.
+- Review the newly ported detail pages against the Blazor originals and refine any page-specific copy, imagery, or section order that should match more closely.
 - Choose whether to keep using `docker compose -p mvp-static-site ...` manually or bake a project name into the local workflow.
 - Work through `docs/github-hardening-checklist.md` and apply the relevant public, private, or organization settings in GitHub.
 - Let the updated CI rerun on the open PR and confirm the workflow now installs pnpm from `package.json` without a version conflict.
@@ -45,6 +61,12 @@
 - Decision: Keep Docker only for the web app development workflow.
   - Reason: Local container support is still useful, but PostgreSQL and auth-specific setup are unnecessary after the conversion.
   - Date: 2026-04-11
+- Decision: Introduce a minimal server-side Next.js endpoint for the contact form instead of keeping strict static export.
+  - Reason: SendGrid requires the API key to stay on the server, so secure email delivery needs a server-capable runtime even though the rest of the site remains static-first.
+  - Date: 2026-04-12
+- Decision: Protect the contact form with Cloudflare Turnstile and verify tokens on the server before attempting email delivery.
+  - Reason: Bot resistance needs to happen before the SendGrid send step, and server-side verification prevents forged or replayed client submissions from bypassing the widget.
+  - Date: 2026-04-12
 
 ## Commands
 - Install: pnpm install
@@ -60,6 +82,6 @@
 - Build: pnpm build
 
 ## Notes for Next Session
-- What was just finished: Added `docs/github-hardening-checklist.md` and fixed the CI workflow's pnpm version mismatch by removing the outdated `pnpm/action-setup` version pin.
-- What should happen next: Confirm the PR checks pass with the updated workflow, then apply the checklist in GitHub and continue replacing starter content.
-- Risks / caution areas: Keep using the isolated Compose project name for this repo so old template containers, networks, and volumes remain untouched.
+- What was just finished: Removed the extra contact sidebar process panel, fixed the shared Contact DevilDog CTA text contrast, dropped the duplicate Home item from the top navigation, and re-verified `pnpm check` plus `pnpm build` in Docker with the Turnstile-protected `/contact` flow still intact.
+- What should happen next: Add the real SendGrid and Turnstile environment variables in `.env` or the deployment host, send a live protected test message through `/contact`, then continue page-by-page visual refinement against the Blazor originals.
+- Risks / caution areas: The repo is no longer a pure static export because the contact form now depends on a server-side route, so deployment must target a host that can run Next.js server or serverless functions. Keep using the isolated Compose project name locally so old template containers, networks, and volumes remain untouched.
