@@ -42,6 +42,8 @@
 - Restyled "Contact DevilDog" buttons site-wide from solid white background to outlined ghost style (transparent background, white border, white text) for better visual consistency on dark surfaces.
 - Converted navbar dropdown menus from CSS hover-only to React state-based control so they now open on hover/click, close when a link is clicked, and close when the mouse leaves.
 - Changed dropdown background from cream to match navbar styling (dark red with white text) and added a frosted glass blur effect with reduced opacity for a lighter feel.
+- Enabled Next.js standalone build output in `next.config.ts` so deploy artifacts are lightweight and App Service-friendly.
+- Added GitHub Actions CD workflow in `.github/workflows/deploy-azure-gov.yml` that builds, tests, packages standalone output, signs in with OIDC to Azure Government (`AzureUSGovernment`), configures startup command, and deploys to Azure App Service.
 
 ## In Progress
 - None.
@@ -54,6 +56,9 @@
 - Choose whether to keep using `docker compose -p mvp-static-site ...` manually or bake a project name into the local workflow.
 - Work through `docs/github-hardening-checklist.md` and apply the relevant public, private, or organization settings in GitHub.
 - Let the updated CI rerun on the open PR and confirm the workflow now installs pnpm from `package.json` without a version conflict.
+- Create and validate a GitHub Actions deployment workflow targeting Azure Government App Service.
+- Configure GitHub repository secrets and Azure federated identity credentials required by the new deployment workflow.
+- Run first manual deployment from Actions and verify `/` plus `/contact` (including `/api/contact`) on Azure Government.
 
 ## Blockers
 - None.
@@ -86,6 +91,6 @@
 - Build: pnpm build
 
 ## Notes for Next Session
-- What was just finished: Refined the site-wide UI by removing the redundant footer CTA button, restyling Contact DevilDog buttons to outlined ghost style, and converting navbar dropdowns to React state-based control with matching dark background and frosted glass blur.
-- What should happen next: Add the real SendGrid and Turnstile environment variables in `.env` or the deployment host, send a live protected test message through `/contact`, then continue page-by-page visual refinement against the Blazor originals.
+- What was just finished: Added Azure Government CD workflow for App Service deployment with OIDC auth and standalone artifact packaging; enabled Next.js standalone output for reliable deployment footprint.
+- What should happen next: Create the Azure Entra app/service principal with GitHub federated credentials, add required GitHub secrets (`AZURE_CLIENT_ID`, `AZURE_TENANT_ID`, `AZURE_SUBSCRIPTION_ID`, `AZURE_RESOURCE_GROUP`, `AZURE_WEBAPP_NAME`), then run `Deploy To Azure Government` manually and verify live endpoints plus contact email flow.
 - Risks / caution areas: The repo is no longer a pure static export because the contact form now depends on a server-side route, so deployment must target a host that can run Next.js server or serverless functions. Keep using the isolated Compose project name locally so old template containers, networks, and volumes remain untouched.
