@@ -46,16 +46,14 @@
 - Added GitHub Actions CD workflow in `.github/workflows/deploy-azure-gov.yml` that builds, tests, packages standalone output, signs in with OIDC to Azure Government (`AzureUSGovernment`), configures startup command, and deploys to Azure App Service.
 
 ## In Progress
-- None.
+- GitHub Actions Azure Government App Service deployment workflow (startup script approach being tested).
 
 ## Next Up
-- Add the real `SENDGRID_API_KEY`, `SENDGRID_FROM_EMAIL`, and `CONTACT_EMAIL_TO` values in the deployment environment and verify an end-to-end test submission.
-- Add Cloudflare Turnstile site and secret keys in the deployment environment and verify the contact form blocks invalid or missing tokens before email is sent.
-- Decide whether to regenerate the local ignored `.env` so it only contains `APP_PORT`.
-- Review the newly ported detail pages against the Blazor originals and refine any page-specific copy, imagery, or section order that should match more closely.
-- Choose whether to keep using `docker compose -p mvp-static-site ...` manually or bake a project name into the local workflow.
-- Work through `docs/github-hardening-checklist.md` and apply the relevant public, private, or organization settings in GitHub.
-- Let the updated CI rerun on the open PR and confirm the workflow now installs pnpm from `package.json` without a version conflict.
+- Verify morning deployment: check App Service log stream for startup success and homepage loading at https://devildog-webapp-appservice.azurewebsites.us
+- If startup succeeds, test contact form end-to-end (Turnstile + email delivery).
+- If deployment fails, review error logs and we will iterate on startup.sh or dependencies.
+- After confirmed live deployment, rotate SendGrid API key and Turnstile secret keys for security.
+- Add production environment approval gate in GitHub Actions for manual deployment control.
 - Create and validate a GitHub Actions deployment workflow targeting Azure Government App Service.
 - Configure GitHub repository secrets and Azure federated identity credentials required by the new deployment workflow.
 - Run first manual deployment from Actions and verify `/` plus `/contact` (including `/api/contact`) on Azure Government.
@@ -91,6 +89,6 @@
 - Build: pnpm build
 
 ## Notes for Next Session
-- What was just finished: Added Azure Government CD workflow for App Service deployment with OIDC auth and standalone artifact packaging; enabled Next.js standalone output for reliable deployment footprint.
-- What should happen next: Create the Azure Entra app/service principal with GitHub federated credentials, add required GitHub secrets (`AZURE_CLIENT_ID`, `AZURE_TENANT_ID`, `AZURE_SUBSCRIPTION_ID`, `AZURE_RESOURCE_GROUP`, `AZURE_WEBAPP_NAME`), then run `Deploy To Azure Government` manually and verify live endpoints plus contact email flow.
-- Risks / caution areas: The repo is no longer a pure static export because the contact form now depends on a server-side route, so deployment must target a host that can run Next.js server or serverless functions. Keep using the isolated Compose project name locally so old template containers, networks, and volumes remain untouched.
+- What was just finished: Set up complete GitHub Actions CI/CD pipeline for Azure Government App Service deployment with OIDC auth, GitHub secrets configured, App Service environment settings populated with SendGrid and Turnstile keys, and final deployment workflow using startup.sh script for dependency install and server startup.
+- What should happen next morning: Check App Service log stream to confirm startup.sh executed successfully and Node.js server is running on port 8080. If running, navigate to https://devildog-webapp-appservice.azurewebsites.us and verify homepage loads. Test contact form with Turnstile and confirm email delivery. If any error appears, iterate on startup.sh and redeploy. After confirmed success, rotate SendGrid API key and Turnstile secret keys that were visible in chat context.
+- Risks / caution areas: Deployment pipeline runs on every push to main; once confirmed working, consider adding production environment approval gate. SendGrid and Turnstile secrets are currently visible in conversation history — prioritize rotation after live verification.
