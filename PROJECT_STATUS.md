@@ -45,12 +45,13 @@
 - Enabled Next.js standalone build output in `next.config.ts` so deploy artifacts are lightweight and App Service-friendly.
 - Added GitHub Actions CD workflow in `.github/workflows/deploy-azure-gov.yml` that builds, tests, packages standalone output, signs in with OIDC to Azure Government (`AzureUSGovernment`), configures startup command, and deploys to Azure App Service.
 - Diagnosed the Azure App Service startup failure as a standalone packaging problem, confirmed in Azure logs that the Oryx-extracted runtime still could not resolve `@swc/helpers` from the standalone pnpm symlink tree, and updated the workflow to install a fresh hoisted production `node_modules` into the deploy artifact during GitHub Actions before shipping the minimal startup script.
+- Added `@swc/helpers` as an explicit production dependency, refreshed `pnpm-lock.yaml`, and revalidated the Azure-style packaged server in Docker where the rebuilt deploy artifact returned HTTP 200.
 
 ## In Progress
-- GitHub Actions Azure Government App Service deployment workflow (redeploy and live Azure verification after switching deploy packaging to a hoisted production `node_modules` install).
+- GitHub Actions Azure Government App Service deployment workflow (redeploy and live Azure verification after switching deploy packaging to a hoisted production `node_modules` install plus explicit `@swc/helpers` runtime dependency).
 
 ## Next Up
-- Redeploy with GitHub Actions building a hoisted production `node_modules` inside `deploy/` so Azure no longer depends on the standalone pnpm symlink layout.
+- Redeploy with GitHub Actions building a hoisted production `node_modules` inside `deploy/` and the explicit `@swc/helpers` dependency present in the artifact.
 - Verify App Service startup success and homepage loading at https://devildog-webapp-appservice.azurewebsites.us
 - If startup succeeds, test contact form end-to-end (Turnstile + email delivery).
 - If deployment still fails, capture the first runtime error after `/home/site/wwwroot/startup.sh` begins so we can distinguish remaining Azure packaging issues from app-level runtime errors.
@@ -91,6 +92,6 @@
 - Build: pnpm build
 
 ## Notes for Next Session
-- What was just finished: Confirmed from Azure logs that the refreshed startup command is being used, but the App Service runtime still fails on `Cannot find module '@swc/helpers/_/_interop_require_default'` after Oryx unpacks `node_modules.tar.gz`. Reworked the GitHub Actions packaging step to install a fresh hoisted production `node_modules` inside `deploy/` instead of relying on the standalone pnpm symlink tree, then validated the packaged server locally in Docker where `deploy-test/server.js` returned HTTP 200.
+- What was just finished: Confirmed from Azure logs that the refreshed startup command is being used, but the App Service runtime still fails on `Cannot find module '@swc/helpers/_/_interop_require_default'` after Oryx unpacks `node_modules.tar.gz`. Reworked the GitHub Actions packaging step to install a fresh hoisted production `node_modules` inside `deploy/`, then added `@swc/helpers` as an explicit production dependency and refreshed `pnpm-lock.yaml`. Validated the resulting Azure-style package locally in Docker from `/tmp`, where the packaged server returned HTTP 200.
 - What should happen next: Redeploy from GitHub Actions, confirm the container answers warmup requests on port 8080, then verify `/` and `/contact` in Azure plus a live contact form submission. If another crash appears, capture the first runtime error after the startup script begins.
 - Risks / caution areas: Deployment pipeline runs on every push to main; once confirmed working, consider adding production environment approval gate. SendGrid and Turnstile secrets were visible in conversation history — prioritize rotation after live verification.
