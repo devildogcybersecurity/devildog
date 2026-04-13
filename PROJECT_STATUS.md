@@ -46,9 +46,10 @@
 - Added GitHub Actions CD workflow in `.github/workflows/deploy-azure-gov.yml` that builds, tests, packages standalone output, signs in with OIDC to Azure Government (`AzureUSGovernment`), configures startup command, and deploys to Azure App Service.
 - Diagnosed the Azure App Service startup failure as a standalone packaging problem, confirmed in Azure logs that the Oryx-extracted runtime still could not resolve `@swc/helpers` from the standalone pnpm symlink tree, and updated the workflow to install a fresh hoisted production `node_modules` into the deploy artifact during GitHub Actions before shipping the minimal startup script.
 - Added `@swc/helpers` as an explicit production dependency, refreshed `pnpm-lock.yaml`, and revalidated the Azure-style packaged server in Docker where the rebuilt deploy artifact returned HTTP 200.
+- Removed the redundant `cp -rL` copy of standalone `node_modules` from the Azure deploy workflow after GitHub Actions failed on a broken pnpm symlink during packaging; the hoisted production install in `deploy/` is now the only dependency population step.
 
 ## In Progress
-- GitHub Actions Azure Government App Service deployment workflow (redeploy and live Azure verification after switching deploy packaging to a hoisted production `node_modules` install plus explicit `@swc/helpers` runtime dependency).
+- GitHub Actions Azure Government App Service deployment workflow (redeploy and live Azure verification after removing the broken standalone `node_modules` copy step and relying on hoisted production install plus explicit `@swc/helpers` runtime dependency).
 
 ## Next Up
 - Redeploy with GitHub Actions building a hoisted production `node_modules` inside `deploy/` and the explicit `@swc/helpers` dependency present in the artifact.
@@ -93,5 +94,6 @@
 
 ## Notes for Next Session
 - What was just finished: Confirmed from Azure logs that the refreshed startup command is being used, but the App Service runtime still fails on `Cannot find module '@swc/helpers/_/_interop_require_default'` after Oryx unpacks `node_modules.tar.gz`. Reworked the GitHub Actions packaging step to install a fresh hoisted production `node_modules` inside `deploy/`, then added `@swc/helpers` as an explicit production dependency and refreshed `pnpm-lock.yaml`. Validated the resulting Azure-style package locally in Docker from `/tmp`, where the packaged server returned HTTP 200.
+- What changed after that: GitHub Actions packaging exposed a broken pnpm symlink when the workflow still tried to `cp -rL` the standalone `node_modules` tree. That copy step has been removed so deployment depends only on the fresh hoisted `pnpm install --prod` inside `deploy/`.
 - What should happen next: Redeploy from GitHub Actions, confirm the container answers warmup requests on port 8080, then verify `/` and `/contact` in Azure plus a live contact form submission. If another crash appears, capture the first runtime error after the startup script begins.
 - Risks / caution areas: Deployment pipeline runs on every push to main; once confirmed working, consider adding production environment approval gate. SendGrid and Turnstile secrets were visible in conversation history — prioritize rotation after live verification.
