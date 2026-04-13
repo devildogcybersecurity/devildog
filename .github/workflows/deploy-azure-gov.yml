@@ -50,8 +50,19 @@ jobs:
           rm -rf deploy
           mkdir -p deploy
           cp -r .next/standalone/. deploy/
+          rm -rf deploy/node_modules
+          mkdir -p deploy/node_modules
+          cp -rL .next/standalone/node_modules/. deploy/node_modules/
           cp -r .next/static deploy/.next/static
           cp -r public deploy/public
+          cat > deploy/startup.sh <<'EOF'
+          #!/bin/sh
+          set -eu
+          cd /home/site/wwwroot
+          export HOSTNAME=0.0.0.0
+          exec node server.js
+          EOF
+          chmod +x deploy/startup.sh
 
       - name: Upload deployment artifact
         uses: actions/upload-artifact@v4
@@ -87,7 +98,7 @@ jobs:
             az webapp config set \
               --resource-group "${{ secrets.AZURE_RESOURCE_GROUP }}" \
               --name "${{ secrets.AZURE_WEBAPP_NAME }}" \
-              --startup-file "HOSTNAME=0.0.0.0 node /home/site/wwwroot/server.js"
+              --startup-file "/home/site/wwwroot/startup.sh"
 
       - name: Deploy to Azure App Service
         uses: azure/webapps-deploy@v3
