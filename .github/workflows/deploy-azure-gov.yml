@@ -52,12 +52,10 @@ jobs:
           cp -r .next/standalone/* deploy/
           cp -r .next/static deploy/.next/static
           cp -r public deploy/public
-          cp package.json pnpm-lock.yaml deploy/
-          # Create startup script
+          # Create startup script (standalone includes traced node_modules - no npm install needed)
           cat > deploy/startup.sh << 'EOF'
           #!/bin/bash
           cd /home/site/wwwroot
-          npm ci --omit=dev
           node server.js
           EOF
           chmod +x deploy/startup.sh
@@ -88,11 +86,18 @@ jobs:
           environment: AzureUSGovernment
           audience: api://AzureADTokenExchangeUSGov
 
-      - name: Configure startup command
+      - name: Configure App Service settings
         uses: azure/cli@v2
         with:
           inlineScript: |
             az cloud set --name AzureUSGovernment
+            # Disable Oryx build - we're deploying pre-built standalone output
+            # Set HOSTNAME and PORT for Next.js standalone server
+            az webapp config appsettings set \
+              --resource-group "${{ secrets.AZURE_RESOURCE_GROUP }}" \
+              --name "${{ secrets.AZURE_WEBAPP_NAME }}" \
+              --settings SCM_DO_BUILD_DURING_DEPLOYMENT=false WEBSITE_RUN_FROM_PACKAGE=0 HOSTNAME=0.0.0.0 PORT=8080
+            # Set startup command
             az webapp config set \
               --resource-group "${{ secrets.AZURE_RESOURCE_GROUP }}" \
               --name "${{ secrets.AZURE_WEBAPP_NAME }}" \
