@@ -53,8 +53,13 @@ jobs:
           cp -r .next/standalone/. deploy/
           cp -r .next/static deploy/.next/static
           cp -r public deploy/public
-          # Remove any oryx manifest that might trigger Oryx processing
-          rm -f deploy/oryx-manifest.toml deploy/node_modules.tar.gz 2>/dev/null || true
+          # Replace traced node_modules with fresh npm install
+          # Standalone's traced modules break when Oryx extracts them to /node_modules
+          rm -rf deploy/node_modules
+          cd deploy
+          npm install --omit=dev
+          # Remove any oryx manifest files
+          rm -f oryx-manifest.toml node_modules.tar.gz 2>/dev/null || true
 
       - name: Upload deployment artifact
         uses: actions/upload-artifact@v4
