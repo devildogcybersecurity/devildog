@@ -52,6 +52,15 @@ jobs:
           cp -r .next/standalone/* deploy/
           cp -r .next/static deploy/.next/static
           cp -r public deploy/public
+          cp package.json pnpm-lock.yaml deploy/
+          # Create startup script
+          cat > deploy/startup.sh << 'EOF'
+          #!/bin/bash
+          cd /home/site/wwwroot
+          npm ci --omit=dev
+          node server.js
+          EOF
+          chmod +x deploy/startup.sh
 
       - name: Upload deployment artifact
         uses: actions/upload-artifact@v4
@@ -87,7 +96,7 @@ jobs:
             az webapp config set \
               --resource-group "${{ secrets.AZURE_RESOURCE_GROUP }}" \
               --name "${{ secrets.AZURE_WEBAPP_NAME }}" \
-              --startup-file "bash -c 'npm install --omit=dev && node server.js'"
+              --startup-file "/home/site/wwwroot/startup.sh"
 
       - name: Deploy to Azure App Service
         uses: azure/webapps-deploy@v3
