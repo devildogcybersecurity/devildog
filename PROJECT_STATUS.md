@@ -44,16 +44,17 @@
 - Changed dropdown background from cream to match navbar styling (dark red with white text) and added a frosted glass blur effect with reduced opacity for a lighter feel.
 - Enabled Next.js standalone build output in `next.config.ts` so deploy artifacts are lightweight and App Service-friendly.
 - Added GitHub Actions CD workflow in `.github/workflows/deploy-azure-gov.yml` that builds, tests, packages standalone output, signs in with OIDC to Azure Government (`AzureUSGovernment`), configures startup command, and deploys to Azure App Service.
-- Diagnosed the first Azure App Service startup failure as a standalone packaging problem, verified the standalone artifact shape in Docker, updated the workflow to preserve hidden `.next` runtime files in the deployment artifact, and switched App Service startup to run `server.js` directly with `HOSTNAME=0.0.0.0` instead of reinstalling dependencies during boot.
+- Diagnosed the Azure App Service startup failure as a standalone packaging problem, verified the standalone artifact shape in Docker, updated the workflow to preserve hidden `.next` runtime files, flattened the pnpm-linked standalone `node_modules` into real files for Azure deployment, and replaced the App Service startup script with a minimal `node server.js` launcher bound to `0.0.0.0`.
 
 ## In Progress
 - GitHub Actions Azure Government App Service deployment workflow (redeploy and live Azure verification after standalone packaging fix).
 
 ## Next Up
 - Redeploy with corrected standalone packaging so the hidden `.next` runtime files ship to App Service intact.
+- Redeploy with the refreshed `startup.sh` and flattened deployment `node_modules` so Azure stops running the stale `npm ci` script and can resolve `@swc/helpers` at runtime.
 - Verify App Service startup success and homepage loading at https://devildog-webapp-appservice.azurewebsites.us
 - If startup succeeds, test contact form end-to-end (Turnstile + email delivery).
-- If deployment still fails, capture the full missing-module or missing-file message from the container log and iterate on the startup command.
+- If deployment still fails, capture the first runtime error after `/home/site/wwwroot/startup.sh` begins so we can distinguish startup-command issues from remaining module packaging issues.
 - After confirmed live deployment, rotate SendGrid API key and Turnstile secret keys for security.
 - Add production environment approval gate in GitHub Actions for manual deployment control.
 - Create and validate a GitHub Actions deployment workflow targeting Azure Government App Service.
@@ -91,6 +92,6 @@
 - Build: pnpm build
 
 ## Notes for Next Session
-- What was just finished: Diagnosed the first App Service startup failure as a deployment artifact issue and verified the fix path in Docker. The workflow had been copying `.next/standalone/*`, which skips hidden entries and therefore drops the standalone bundle's internal `.next` runtime directory. The workflow now ships the standalone output intact and starts `server.js` directly with `HOSTNAME=0.0.0.0` instead of reinstalling dependencies during App Service startup.
+- What was just finished: Diagnosed the App Service startup failure as a deployment artifact issue and verified the fix path in Docker. The workflow had been copying `.next/standalone/*`, which skips hidden entries and therefore drops the standalone bundle's internal `.next` runtime directory. The Azure logs also showed App Service still executing an old `startup.sh` that ran `npm ci`, and the pnpm-style standalone `node_modules` layout failed to resolve `@swc/helpers` after Azure unpacked it. The workflow now ships the standalone output intact, overwrites `startup.sh` with a minimal launcher, and dereferences the standalone `node_modules` symlink tree into real files before deployment.
 - What should happen next: Redeploy from GitHub Actions, confirm the container answers warmup requests on port 8080, then verify `/` and `/contact` in Azure plus a live contact form submission. If another crash appears, capture the full error message above the `requireStack` lines from the container log.
 - Risks / caution areas: Deployment pipeline runs on every push to main; once confirmed working, consider adding production environment approval gate. SendGrid and Turnstile secrets were visible in conversation history — prioritize rotation after live verification.
