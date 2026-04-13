@@ -4,7 +4,7 @@
 - Name: mvp-template
 - Template Type: Static website baseline
 - Current Branch: main
-- Last Updated: 2026-04-12
+- Last Updated: 2026-04-13
 
 ## Current Phase
 - Public marketing site with SendGrid-ready contact workflow verified in Docker
@@ -44,15 +44,16 @@
 - Changed dropdown background from cream to match navbar styling (dark red with white text) and added a frosted glass blur effect with reduced opacity for a lighter feel.
 - Enabled Next.js standalone build output in `next.config.ts` so deploy artifacts are lightweight and App Service-friendly.
 - Added GitHub Actions CD workflow in `.github/workflows/deploy-azure-gov.yml` that builds, tests, packages standalone output, signs in with OIDC to Azure Government (`AzureUSGovernment`), configures startup command, and deploys to Azure App Service.
-- Fixed Dockerfile from development shell to proper multi-stage production build (deps → builder → runner) that installs dependencies, runs `next build`, and copies standalone output to a lean production image running `node server.js` on port 8080.
+- Diagnosed the Azure App Service startup failure as a standalone packaging problem, confirmed in Azure logs that the Oryx-extracted runtime still could not resolve `@swc/helpers` from the standalone pnpm symlink tree.
+- Added `@swc/helpers` as an explicit production dependency, refreshed `pnpm-lock.yaml`.
+- Fixed Dockerfile from development shell to proper multi-stage production build (deps → builder → runner) for local Docker use.
 - Fixed `.dockerignore` to include `pnpm-lock.yaml` which is required for `pnpm install --frozen-lockfile`.
-- Fixed Azure deployment workflow: removed `npm ci --omit=dev` from startup.sh (standalone output is self-contained), disabled Oryx build with `SCM_DO_BUILD_DURING_DEPLOYMENT=false`, and set `HOSTNAME=0.0.0.0` and `PORT=8080` environment variables for Next.js server.
+- Fixed Azure deployment workflow: simplified startup.sh to just run `node server.js`, disabled Oryx build with `SCM_DO_BUILD_DURING_DEPLOYMENT=false`, and set `HOSTNAME=0.0.0.0` and `PORT=8080` environment variables for Next.js server.
 
 ## In Progress
-- Azure App Service deployment fix — Dockerfile updated to multi-stage production build.
+- Azure App Service deployment fix — testing simplified standalone deployment.
 
 ## Next Up
-- Commit and push the Dockerfile fix to trigger a new deployment.
 - Verify deployment: check App Service log stream for startup success and homepage loading at https://devildog-webapp-appservice.azurewebsites.us
 - If startup succeeds, test contact form end-to-end (Turnstile + email delivery).
 - After confirmed live deployment, rotate SendGrid API key and Turnstile secret keys for security.
@@ -89,6 +90,6 @@
 - Build: pnpm build
 
 ## Notes for Next Session
-- What was just finished: Fixed the Azure deployment failure caused by missing `.next` build directory. Root causes identified: (1) startup.sh ran `npm ci --omit=dev` which overwrote the traced node_modules from standalone output; (2) Oryx build may have been interfering; (3) HOSTNAME/PORT env vars weren't set for Next.js standalone server. Fixes applied: simplified startup.sh to just run `node server.js`, disabled Oryx build, added HOSTNAME and PORT app settings. Also updated local Dockerfile for proper multi-stage production builds (for docker-compose).
+- What was just finished: Fixed the Azure deployment failure. Root causes: standalone pnpm symlinks don't work on App Service, Oryx build interfering, missing HOSTNAME/PORT env vars. Fixes: simplified startup.sh to just `node server.js`, disabled Oryx build, added HOSTNAME and PORT app settings, updated Dockerfile for multi-stage builds (local Docker dev).
 - What should happen next: Commit and push to trigger new deployment. Watch App Service logs for successful container start with `node server.js` running on port 8080. Verify homepage loads at the Azure URL.
-- Risks / caution areas: Deployment pipeline runs on every push to main; once confirmed working, consider adding production environment approval gate. SendGrid and Turnstile secrets visible in earlier conversation history — prioritize rotation after live verification.
+- Risks / caution areas: Deployment pipeline runs on every push to main; once confirmed working, consider adding production environment approval gate. SendGrid and Turnstile secrets were visible in conversation history — prioritize rotation after live verification.

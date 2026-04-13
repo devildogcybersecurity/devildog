@@ -25,6 +25,7 @@
     "docker:logs": "docker compose logs -f app"
   },
   "dependencies": {
+    "@swc/helpers": "^0.5.15",
     "next": "16.2.3",
     "react": "19.2.0",
     "react-dom": "19.2.0"
