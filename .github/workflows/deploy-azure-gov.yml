@@ -48,8 +48,9 @@ jobs:
         shell: bash
         run: |
           rm -rf deploy
-          mkdir -p deploy/.next
-          cp -r .next/standalone/* deploy/
+          mkdir -p deploy
+          # Use trailing dot to copy all files including hidden (.next folder)
+          cp -r .next/standalone/. deploy/
           cp -r .next/static deploy/.next/static
           cp -r public deploy/public
           # Create startup script (standalone includes traced node_modules - no npm install needed)
