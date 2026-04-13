@@ -55,14 +55,18 @@ jobs:
           cp -rL .next/standalone/node_modules/. deploy/node_modules/
           cp -r .next/static deploy/.next/static
           cp -r public deploy/public
-          cat > deploy/startup.sh <<'EOF'
+          cp pnpm-lock.yaml deploy/pnpm-lock.yaml
+          cd deploy
+          rm -rf node_modules
+          pnpm install --prod --frozen-lockfile --config.node-linker=hoisted
+          cat > startup.sh <<'EOF'
           #!/bin/sh
           set -eu
           cd /home/site/wwwroot
           export HOSTNAME=0.0.0.0
           exec node server.js
           EOF
-          chmod +x deploy/startup.sh
+          chmod +x startup.sh
 
       - name: Upload deployment artifact
         uses: actions/upload-artifact@v4
