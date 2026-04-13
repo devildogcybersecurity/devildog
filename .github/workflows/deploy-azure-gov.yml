@@ -52,7 +52,6 @@ jobs:
           cp -r .next/standalone/* deploy/
           cp -r .next/static deploy/.next/static
           cp -r public deploy/public
-          cp -r node_modules deploy/node_modules
 
       - name: Upload deployment artifact
         uses: actions/upload-artifact@v4
@@ -88,7 +87,7 @@ jobs:
             az webapp config set \
               --resource-group "${{ secrets.AZURE_RESOURCE_GROUP }}" \
               --name "${{ secrets.AZURE_WEBAPP_NAME }}" \
-              --startup-file "node server.js"
+              --startup-file "bash -c 'npm install --omit=dev && node server.js'"
 
       - name: Deploy to Azure App Service
         uses: azure/webapps-deploy@v3
