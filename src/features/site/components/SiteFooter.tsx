@@ -61,14 +61,6 @@ export function SiteFooter({ footerLinkGroups, socialLinks, contact }: SiteFoote
             {contact.title}
           </h2>
           <p className="mt-3 max-w-sm text-sm leading-7 text-white/80">{contact.description}</p>
-          <div className="mt-6">
-            <Link
-              href="/contact"
-              className="inline-flex rounded-full bg-white px-5 py-3 text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--dd-red-deep)] transition hover:bg-[color:var(--dd-cream)] hover:text-[color:var(--dd-red-deep)]"
-            >
-              Send a Message
-            </Link>
-          </div>
           <div className="mt-6 flex gap-3">
             {socialLinks.map((link) => (
               <a

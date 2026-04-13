@@ -56,7 +56,7 @@ function ActionLink({
 }) {
   const className = primary
     ? theme === 'dark'
-      ? 'inline-flex rounded-full bg-white px-5 py-3 text-sm font-semibold uppercase tracking-[0.16em] text-[color:var(--dd-red-deep)] shadow-[0_12px_28px_rgba(0,0,0,0.16)] transition hover:bg-[color:var(--dd-cream)] hover:text-[color:var(--dd-red-deep)]'
+      ? 'inline-flex rounded-full border border-white/20 px-5 py-3 text-sm font-semibold uppercase tracking-[0.16em] text-white transition hover:bg-white/10'
       : 'inline-flex rounded-full bg-[color:var(--dd-red)] px-5 py-3 text-sm font-semibold uppercase tracking-[0.16em] text-white transition hover:bg-[color:var(--dd-red-deep)]'
     : theme === 'dark'
       ? 'inline-flex rounded-full border border-white/20 px-5 py-3 text-sm font-semibold uppercase tracking-[0.16em] text-white transition hover:bg-white/10'

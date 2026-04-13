@@ -38,6 +38,10 @@
 - Re-ran `pnpm check` and `pnpm build` in Docker after the Turnstile milestone and confirmed the contact page still builds cleanly with the protected `/api/contact` route.
 - Removed the extra "What Happens Next" panel from the contact page, simplified the top navigation by dropping the duplicate Home link, and fixed the shared Contact DevilDog CTA styling so button text stays readable on the footer and page-level Next Step panels.
 - Re-ran `pnpm check` and `pnpm build` in Docker after the contact-page and CTA cleanup and confirmed the site still builds cleanly with the protected `/api/contact` route.
+- Removed the "Send a Message" button from the footer to reduce redundant CTAs.
+- Restyled "Contact DevilDog" buttons site-wide from solid white background to outlined ghost style (transparent background, white border, white text) for better visual consistency on dark surfaces.
+- Converted navbar dropdown menus from CSS hover-only to React state-based control so they now open on hover/click, close when a link is clicked, and close when the mouse leaves.
+- Changed dropdown background from cream to match navbar styling (dark red with white text) and added a frosted glass blur effect with reduced opacity for a lighter feel.
 
 ## In Progress
 - None.
@@ -82,6 +86,6 @@
 - Build: pnpm build
 
 ## Notes for Next Session
-- What was just finished: Removed the extra contact sidebar process panel, fixed the shared Contact DevilDog CTA text contrast, dropped the duplicate Home item from the top navigation, and re-verified `pnpm check` plus `pnpm build` in Docker with the Turnstile-protected `/contact` flow still intact.
+- What was just finished: Refined the site-wide UI by removing the redundant footer CTA button, restyling Contact DevilDog buttons to outlined ghost style, and converting navbar dropdowns to React state-based control with matching dark background and frosted glass blur.
 - What should happen next: Add the real SendGrid and Turnstile environment variables in `.env` or the deployment host, send a live protected test message through `/contact`, then continue page-by-page visual refinement against the Blazor originals.
 - Risks / caution areas: The repo is no longer a pure static export because the contact form now depends on a server-side route, so deployment must target a host that can run Next.js server or serverless functions. Keep using the isolated Compose project name locally so old template containers, networks, and volumes remain untouched.

@@ -39,6 +39,48 @@ function CloseIcon() {
   );
 }
 
+function NavDropdown({ group }: { group: NavigationGroup }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div
+      className="relative"
+      onMouseEnter={() => setIsOpen(true)}
+      onMouseLeave={() => setIsOpen(false)}
+    >
+      <button
+        type="button"
+        className="flex items-center gap-1 text-sm font-semibold tracking-[0.14em] text-white/90 transition hover:text-[color:var(--dd-cream)]"
+        onClick={() => setIsOpen((prev) => !prev)}
+      >
+        <span>{group.label}</span>
+        <ChevronDownIcon />
+      </button>
+
+      <div
+        className={`absolute left-0 top-full z-20 pt-2 transition duration-200 ${
+          isOpen ? 'visible opacity-100' : 'invisible opacity-0'
+        }`}
+      >
+        <div className="max-h-[70vh] min-w-72 overflow-y-auto rounded-2xl border border-white/10 bg-[rgba(108,4,4,0.85)] p-3 shadow-[0_22px_65px_rgba(0,0,0,0.18)] backdrop-blur-md">
+          <div className="grid gap-1">
+            {group.links.map((link) => (
+              <Link
+                key={link.label}
+                href={link.href}
+                onClick={() => setIsOpen(false)}
+                className="rounded-xl px-4 py-3 text-sm font-semibold text-white/90 transition hover:bg-white/10 hover:text-[color:var(--dd-cream)]"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function SiteHeader({ primaryNavigation, navigationGroups }: SiteHeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -68,29 +110,7 @@ export function SiteHeader({ primaryNavigation, navigationGroups }: SiteHeaderPr
           ))}
 
           {navigationGroups.map((group) => (
-            <div key={group.label} className="group relative">
-              <button
-                type="button"
-                className="flex items-center gap-1 text-sm font-semibold tracking-[0.14em] text-white/90 transition hover:text-[color:var(--dd-cream)]"
-              >
-                <span>{group.label}</span>
-                <ChevronDownIcon />
-              </button>
-
-              <div className="invisible absolute left-0 top-full z-20 max-h-[70vh] min-w-72 overflow-y-auto translate-y-3 rounded-2xl border border-[color:var(--dd-border)] bg-[color:var(--dd-cream)] p-3 opacity-0 shadow-[0_22px_65px_rgba(0,0,0,0.18)] transition duration-200 group-hover:visible group-hover:translate-y-4 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-4 group-focus-within:opacity-100">
-                <div className="grid gap-1">
-                  {group.links.map((link) => (
-                    <Link
-                      key={link.label}
-                      href={link.href}
-                      className="rounded-xl px-4 py-3 text-sm font-semibold text-[color:var(--dd-copy)] transition hover:bg-white hover:text-[color:var(--dd-red)]"
-                    >
-                      {link.label}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            </div>
+            <NavDropdown key={group.label} group={group} />
           ))}
 
           <Link
