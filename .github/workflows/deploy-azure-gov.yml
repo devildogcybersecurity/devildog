@@ -53,13 +53,8 @@ jobs:
           cp -r .next/standalone/. deploy/
           cp -r .next/static deploy/.next/static
           cp -r public deploy/public
-          # Create startup script (standalone includes traced node_modules - no npm install needed)
-          cat > deploy/startup.sh << 'EOF'
-          #!/bin/bash
-          cd /home/site/wwwroot
-          node server.js
-          EOF
-          chmod +x deploy/startup.sh
+          # Remove any oryx manifest that might trigger Oryx processing
+          rm -f deploy/oryx-manifest.toml deploy/node_modules.tar.gz 2>/dev/null || true
 
       - name: Upload deployment artifact
         uses: actions/upload-artifact@v4
@@ -93,17 +88,17 @@ jobs:
         with:
           inlineScript: |
             az cloud set --name AzureUSGovernment
-            # Disable Oryx build - we're deploying pre-built standalone output
+            # Disable Oryx build and autoconfiguration - we're deploying pre-built standalone output
             # Set HOSTNAME and PORT for Next.js standalone server
             az webapp config appsettings set \
               --resource-group "${{ secrets.AZURE_RESOURCE_GROUP }}" \
               --name "${{ secrets.AZURE_WEBAPP_NAME }}" \
-              --settings SCM_DO_BUILD_DURING_DEPLOYMENT=false WEBSITE_RUN_FROM_PACKAGE=0 HOSTNAME=0.0.0.0 PORT=8080
-            # Set startup command
+              --settings SCM_DO_BUILD_DURING_DEPLOYMENT=false WEBSITE_RUN_FROM_PACKAGE=0 WEBSITE_SKIP_AUTOCONFIGURATION=1 HOSTNAME=0.0.0.0 PORT=8080
+            # Set startup command to run node directly (bypass Oryx startup script)
             az webapp config set \
               --resource-group "${{ secrets.AZURE_RESOURCE_GROUP }}" \
               --name "${{ secrets.AZURE_WEBAPP_NAME }}" \
-              --startup-file "/home/site/wwwroot/startup.sh"
+              --startup-file "node server.js"
 
       - name: Deploy to Azure App Service
         uses: azure/webapps-deploy@v3
