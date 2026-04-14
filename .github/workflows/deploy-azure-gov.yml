@@ -43,7 +43,7 @@ jobs:
 
       - name: Build application
         env:
-          NEXT_PUBLIC_TURNSTILE_SITE_KEY: ${{ vars.NEXT_PUBLIC_TURNSTILE_SITE_KEY }}
+          NEXT_PUBLIC_TURNSTILE_SITE_KEY: "0x4AAAAAAC8jXay-Tl1si0fo"
         run: pnpm build
 
       - name: Assemble standalone deployment package
