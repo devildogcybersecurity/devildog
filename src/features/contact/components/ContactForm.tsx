@@ -21,6 +21,9 @@ type SubmissionState =
   | { kind: 'success'; message: string }
   | { kind: 'error'; message: string };
 
+const contactDeliveryFailureMessage =
+  'Something went wrong while sending your message. Please try again later. If the issue persists, our team will review it.';
+
 function FieldError({ message }: { message?: string }) {
   if (!message) {
     return null;
@@ -100,8 +103,7 @@ export function ContactForm() {
 
         setSubmissionState({
           kind: 'error',
-          message:
-            result?.message ?? 'We could not send your message right now. Please try again shortly.',
+          message: result?.message ?? contactDeliveryFailureMessage,
         });
         return;
       }
@@ -116,7 +118,7 @@ export function ContactForm() {
     } catch {
       setSubmissionState({
         kind: 'error',
-        message: 'We could not reach the contact service. Please try again shortly.',
+        message: contactDeliveryFailureMessage,
       });
     } finally {
       setIsSubmitting(false);

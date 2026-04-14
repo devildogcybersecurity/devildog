@@ -5,6 +5,8 @@ import { verifyTurnstileToken } from '@/features/contact/turnstile';
 import { validateContactFormInput } from '@/features/contact/contactValidation';
 
 export const runtime = 'nodejs';
+const contactDeliveryFailureMessage =
+  'Something went wrong while sending your message. Please try again later. If the issue persists, our team will review it.';
 
 function getRequestIp(request: Request) {
   const cloudflareIp = request.headers.get('cf-connecting-ip');
@@ -87,7 +89,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(
       {
-        message: 'The contact form is not configured yet. Please try again after the email settings are added.',
+        message: contactDeliveryFailureMessage,
       },
       { status: 500 },
     );
@@ -105,7 +107,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(
       {
-        message: 'We could not send your message right now. Please try again shortly.',
+        message: contactDeliveryFailureMessage,
       },
       { status: 502 },
     );

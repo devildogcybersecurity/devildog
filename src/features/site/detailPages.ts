@@ -427,7 +427,7 @@ export const detailPages = [
         eyebrow: 'Planning',
         title: 'Build a cyber defense plan leadership can stand behind',
         paragraphs: [
-          'DevilDog’s original page emphasizes executive liability and the need for due diligence when AI becomes part of critical business services.',
+          'Executive liability and due diligence become more important when AI becomes part of critical business services.',
           'That makes risk management, policy, monitoring, and clear ownership just as important as the technical controls themselves.',
         ],
         imageSrc: '/images/devildog/pages/executive-service.jpeg',
@@ -506,7 +506,7 @@ export const detailPages = [
         eyebrow: 'Client Profile',
         title: 'Protection for high-profile lifestyles',
         paragraphs: [
-          'The original service is built for executives, family members, and associates whose digital exposure can create financial, reputational, or safety risk.',
+          'This service is built for executives, family members, and associates whose digital exposure can create financial, reputational, or safety risk.',
           'DevilDog emphasizes discretion, efficiency, and programs that fit into day-to-day life rather than adding friction to it.',
         ],
         imageSrc: '/images/devildog/pages/penetration-testing.jpg',
@@ -660,7 +660,7 @@ export const detailPages = [
         kind: 'list',
         theme: 'light',
         eyebrow: 'Control Ideas',
-        title: 'Examples from the original IAM guidance',
+        title: 'Examples of identity and access management controls',
         items: [
           'Automate access privilege provisioning',
           'Control privileged accounts carefully',
@@ -699,7 +699,7 @@ export const detailPages = [
         title: 'Increase resiliency and decrease risk',
         paragraphs: [
           'The monitoring offering is positioned around network security monitoring, intrusion detection, and SIEM experience across tools like Splunk, LogRhythm, Elasticsearch, and Microsoft Sentinel.',
-          'DevilDog’s original copy highlights rapid implementation timelines and programs that support both security operations and compliance-oriented visibility needs.',
+          'DevilDog focuses on rapid implementation timelines and programs that support both security operations and compliance-oriented visibility needs.',
         ],
         imageSrc: '/images/devildog/pages/compliance.jpg',
         imageAlt: 'Cybersecurity operations monitoring screen',
@@ -757,7 +757,7 @@ export const detailPages = [
         eyebrow: 'Assessment Focus',
         title: 'Start with the real state of your environment',
         paragraphs: [
-          'Across the original DevilDog site, the Transparency Risk Report appears as the starting point for many engagements. The idea is simple: establish an honest view of risk before spending money on controls that may not address the real problem.',
+          'The Transparency Risk Report serves as the starting point for many engagements. The idea is simple: establish an honest view of risk before spending money on controls that may not address the real problem.',
           'That assessment becomes a roadmap for hardening infrastructure, supporting audits, and prioritizing remediation in a way executives and operators can both understand.',
         ],
         imageSrc: '/images/devildog/home/man-on-peak.jpg',
@@ -826,7 +826,7 @@ export const detailPages = [
         kind: 'list',
         theme: 'light',
         eyebrow: 'Control Types',
-        title: 'Examples of controls called out in the original page',
+        title: 'Examples of security controls in scope',
         items: [
           'Firewalls',
           'Fencing and physical barriers',
@@ -875,7 +875,7 @@ export const detailPages = [
         eyebrow: 'Why Training',
         title: 'Personnel can be a key point of failure',
         paragraphs: [
-          'The original page emphasizes that the majority of incidents and breaches involve human error. DevilDog responds by tailoring training to role, audience, responsibility, and compliance need instead of shipping one generic awareness deck.',
+          'Many incidents and breaches involve human error. DevilDog responds by tailoring training to role, audience, responsibility, and compliance need instead of shipping one generic awareness deck.',
           'That creates a more practical learning path for executives, engineers, managers, and everyday staff who all influence the organization’s risk profile differently.',
         ],
         imageSrc: '/images/devildog/pages/training.jpg',
@@ -935,7 +935,7 @@ export const detailPages = [
         title: 'Complete custom solutions for policy and procedure work',
         paragraphs: [
           'The documentation service is built for organizations that need to create or improve framework-specific policies, procedures, and supporting materials.',
-          'DevilDog’s original copy also calls out the insurance angle directly: without proof of adherence and supporting documentation, claims can be denied even when technical controls exist.',
+          'The insurance angle matters too: without proof of adherence and supporting documentation, claims can be denied even when technical controls exist.',
         ],
         imageSrc: '/images/devildog/pages/badge.jpeg',
         imageAlt: 'Compliance badge',
@@ -944,7 +944,7 @@ export const detailPages = [
         kind: 'list',
         theme: 'light',
         eyebrow: 'Key Policy Areas',
-        title: 'Examples of documentation elements highlighted on the original page',
+        title: 'Examples of documentation elements in scope',
         items: [
           'Access control policy',
           'Acceptable use policy',
@@ -996,7 +996,7 @@ export const detailPages = [
         eyebrow: 'Testing Focus',
         title: 'Detection, reporting, and remediation guidance',
         paragraphs: [
-          'The original pentesting page positions the service as a deep scan across systems, servers, applications, and databases, followed by a report with remediation steps.',
+          'The pentesting service includes deep testing across systems, servers, applications, and databases, followed by a report with remediation steps.',
           'That makes the exercise more than a point-in-time attack simulation. It becomes a way to validate how well the environment would stand up to real-world pressure and what should happen next.',
         ],
         imageSrc: '/images/devildog/home/iceberg.jpg',
@@ -1006,7 +1006,7 @@ export const detailPages = [
         kind: 'cards',
         theme: 'dark',
         eyebrow: 'Why Pentest',
-        title: 'Reasons the original page calls out',
+        title: 'Why penetration testing matters',
         cards: [
           { title: 'Reveal Real Weaknesses', description: 'Simulate adversary behavior to identify exploitable gaps, not just theoretical concerns.' },
           { title: 'Support Compliance', description: 'Meet expectations for frameworks that require periodic penetration testing.' },
@@ -1041,7 +1041,7 @@ export const detailPages = [
         title: 'Cloud security simplified',
         paragraphs: [
           'WatchDog Cloud is presented as a managed solution that can help organizations meet requirements across government and healthcare-aligned frameworks while reducing the complexity of building everything from scratch.',
-          'The original page highlights more than 100 controls, a compliance-friendly platform approach, and affordability relative to heavier alternatives.',
+          'The offering highlights more than 100 controls, a compliance-friendly platform approach, and affordability relative to heavier alternatives.',
         ],
         imageSrc: '/images/devildog/pages/watchdog-cloud.jpg',
         imageAlt: 'Cloud security image',
@@ -1050,7 +1050,7 @@ export const detailPages = [
         kind: 'cards',
         theme: 'dark',
         eyebrow: 'Why It Stands Out',
-        title: 'What the original WatchDog Cloud page emphasizes',
+        title: 'What sets WatchDog Cloud apart',
         cards: [
           { title: '100+ Controls', description: 'Deploy a broad control set inside a managed cloud architecture.' },
           { title: 'Speed and Affordability', description: 'Move faster and more cost-effectively than heavier, more complex options.' },
@@ -1093,7 +1093,7 @@ export const detailPages = [
         title: 'A prescriptive approach to security and regulation',
         paragraphs: [
           'DevilDog’s compliance overview frames regulation as a hardening tool rather than a paperwork exercise. The goal is to make complex requirements more understandable while still pushing toward meaningful implementation.',
-          'The original page highlights complete business continuity planning, disaster recovery, risk identification, documented procedures, and continuous monitoring as pieces of that larger compliance program.',
+          'The program includes business continuity planning, disaster recovery, risk identification, documented procedures, and continuous monitoring as pieces of that larger compliance effort.',
         ],
         imageSrc: '/images/devildog/pages/badge.jpeg',
         imageAlt: 'Compliance badge and reporting image',
@@ -1102,7 +1102,7 @@ export const detailPages = [
         kind: 'list',
         theme: 'light',
         eyebrow: 'Specializations',
-        title: 'Frameworks and standards referenced on the original overview page',
+        title: 'Frameworks and standards supported',
         items: [
           'GLBA',
           'DFARS',
@@ -1159,7 +1159,7 @@ export const detailPages = [
     whyTitle: 'Why CMMC matters',
     whyParagraphs: [
       'CMMC compliance is positioned around protecting Federal Contract Information and Controlled Unclassified Information while strengthening trust with government customers.',
-      'DevilDog’s original page emphasizes early planning, practical implementation, and ongoing monitoring so companies can stay aligned as requirements evolve.',
+      'DevilDog emphasizes early planning, practical implementation, and ongoing monitoring so companies can stay aligned as requirements evolve.',
     ],
     cards: [
       { title: 'Protect Sensitive Data', description: 'Build controls around FCI and CUI across storage, processing, and transmission.' },
@@ -1195,7 +1195,7 @@ export const detailPages = [
     whyTitle: 'Why NIST 800-171 matters',
     whyParagraphs: [
       'NIST 800-171 is positioned around protecting Controlled Unclassified Information while supporting contract eligibility and stronger data security for defense-related organizations.',
-      'The original page emphasizes lifecycle protection for sensitive information and the need for expert guidance that understands defense-sector realities.',
+      'The framework emphasizes lifecycle protection for sensitive information and the need for expert guidance that understands defense-sector realities.',
     ],
     cards: [
       { title: 'Protect CUI', description: 'Apply controls that preserve confidentiality and reduce exposure across the data lifecycle.' },
@@ -1213,7 +1213,7 @@ export const detailPages = [
     whyTitle: 'Why GLBA matters',
     whyParagraphs: [
       'GLBA is focused on protecting customer financial information and reducing the risk of breaches or regulatory fallout inside financial organizations.',
-      'DevilDog’s source page emphasizes tailored controls, careful assessment of existing practices, and ongoing support to preserve compliance over time.',
+      'DevilDog emphasizes tailored controls, careful assessment of existing practices, and ongoing support to preserve compliance over time.',
     ],
     cards: [
       { title: 'Protect Customer Data', description: 'Reduce exposure around account details, identifiers, and other non-public information.' },
@@ -1249,7 +1249,7 @@ export const detailPages = [
     whyTitle: 'Why HITRUST matters',
     whyParagraphs: [
       'HITRUST is presented as a comprehensive healthcare-focused framework for reducing cyber risk, improving governance, and demonstrating security maturity to stakeholders.',
-      'DevilDog’s original page emphasizes policy review, risk assessments, vulnerability scanning, and stronger protection for healthcare data and payment information.',
+      'DevilDog emphasizes policy review, risk assessments, vulnerability scanning, and stronger protection for healthcare data and payment information.',
     ],
     cards: [
       { title: 'Framework Alignment', description: 'Use a mature healthcare-oriented framework to organize security expectations more clearly.' },
@@ -1296,7 +1296,7 @@ export const detailPages = [
         title: 'Always faithful in how the company serves clients',
         paragraphs: [
           'DevilDog Cybersecurity was founded by Marines with extensive backgrounds in cybersecurity and business. The team includes leaders with advanced degrees in information technology and cybersecurity, along with educators and experienced engineers.',
-          'The original story page ties that identity directly to honor, courage, and commitment, positioning the company as a long-term partner that shows up consistently for clients.',
+          'That identity ties directly to honor, courage, and commitment, positioning the company as a long-term partner that shows up consistently for clients.',
           'It also emphasizes relationships with leaders across government cybersecurity standards such as NIST 800-171 and CMMC, reinforcing the company’s compliance and mission focus.',
         ],
         imageSrc: '/images/devildog/home/flyover.jpeg',
@@ -1306,7 +1306,7 @@ export const detailPages = [
         kind: 'cards',
         theme: 'dark',
         eyebrow: 'Mission & Values',
-        title: 'What the original story page says DevilDog stands for',
+        title: 'What DevilDog stands for',
         cards: [
           { title: 'Mission', description: 'Create innovative, resilient, and secure cybersecurity solutions.' },
           { title: 'Vision', description: 'Simplify the world through technology and practical execution.' },
@@ -1354,7 +1354,7 @@ export const detailPages = [
         eyebrow: 'Leadership Team',
         title: 'Experience across engineering, operations, academia, and defense-oriented cybersecurity',
         description:
-          'These profiles are adapted from the original Blazor team page and preserve the emphasis on practical experience, advanced education, and service background.',
+          'Meet the leadership team guiding DevilDog across engineering, operations, and cybersecurity delivery.',
         members: teamMembers,
       },
     ],

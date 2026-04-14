@@ -1,7 +1,18 @@
+import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 
+import { buildPageMetadata } from '@/features/site/seo';
 import { aboutPrinciples, storyContent } from '@/features/site/siteContent';
+
+export const metadata: Metadata = buildPageMetadata({
+  title: 'About DevilDog Cybersecurity',
+  description:
+    'Learn about DevilDog Cybersecurity, its veteran-led approach, mission discipline, and commitment to practical cybersecurity delivery.',
+  path: '/about',
+  imagePath: storyContent.imageSrc,
+  imageAlt: storyContent.imageAlt,
+});
 
 export default function MarketingPage() {
   return (
@@ -15,10 +26,9 @@ export default function MarketingPage() {
             A cybersecurity partner shaped by mission discipline, technical depth, and long-term accountability.
           </h1>
           <p className="mt-6 max-w-3xl text-base leading-8 text-white/80 sm:text-lg">
-            The original Blazor site presents DevilDog as a veteran-led cybersecurity company with
-            strong roots in compliance, infrastructure hardening, and training. This Next.js
-            version keeps that core identity while reorganizing it into a static, Tailwind-first
-            structure that is easier to extend.
+            DevilDog is a veteran-led cybersecurity company with strong roots in compliance,
+            infrastructure hardening, and training. The team brings mission discipline and
+            practical delivery to organizations that need stronger security and clearer execution.
           </p>
           <div className="mt-8">
             <Link

@@ -2,7 +2,8 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import { DetailPage } from '@/features/site/components/DetailPage';
-import { detailPages, getDetailPageBySlug } from '@/features/site/detailPages';
+import { detailPages, getDetailPageBySlug, slugToPath } from '@/features/site/detailPages';
+import { buildPageMetadata } from '@/features/site/seo';
 
 export const dynamicParams = false;
 
@@ -24,10 +25,13 @@ export async function generateMetadata({
     return {};
   }
 
-  return {
-    title: `${page.title} | DevilDog Cybersecurity`,
+  return buildPageMetadata({
+    title: page.title,
     description: page.description,
-  };
+    path: slugToPath(page.slug),
+    imagePath: page.hero.imageSrc,
+    imageAlt: page.hero.imageAlt,
+  });
 }
 
 export default async function DetailRoutePage({

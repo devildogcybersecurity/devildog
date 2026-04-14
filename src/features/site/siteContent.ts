@@ -35,9 +35,28 @@ export type ServiceHighlight = {
 };
 
 export const siteMetadata = {
+  name: 'DevilDog Cybersecurity',
   title: 'DevilDog Cybersecurity',
   description:
-    'Turnkey cybersecurity, compliance, cloud, and training solutions rebuilt as a static Next.js website.',
+    'Turnkey cybersecurity, compliance, cloud, monitoring, and training solutions for organizations that need practical security programs and resilient delivery.',
+  siteUrl: 'https://devildogcyber.com',
+  locale: 'en_US',
+  defaultOgImage: '/images/devildog/home/looking-up-trees.jpg',
+  logoPath: '/images/devildog/logo-white.png',
+  keywords: [
+    'cybersecurity services',
+    'compliance consulting',
+    'security monitoring',
+    'penetration testing',
+    'cloud security',
+    'CMMC compliance',
+    'HIPAA compliance',
+    'HITRUST support',
+    'NIST 800-171',
+    'ISO 27001',
+    'executive cybersecurity',
+    'maritime cybersecurity',
+  ],
 };
 
 export const primaryNavigation = [
