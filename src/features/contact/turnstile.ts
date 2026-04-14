@@ -13,6 +13,26 @@ type TurnstileVerifyResponse = {
   'error-codes'?: string[];
 };
 
+export function getTurnstileSiteKey() {
+  return process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY?.trim() ?? '';
+}
+
+export function getTurnstileClientConfig() {
+  const siteKey = getTurnstileSiteKey();
+
+  if (!siteKey) {
+    return {
+      isConfigured: false as const,
+      missing: ['NEXT_PUBLIC_TURNSTILE_SITE_KEY'],
+    };
+  }
+
+  return {
+    isConfigured: true as const,
+    siteKey,
+  };
+}
+
 export function getTurnstileConfig() {
   const secretKey = process.env.TURNSTILE_SECRET_KEY?.trim() ?? '';
 

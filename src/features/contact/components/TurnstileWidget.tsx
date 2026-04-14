@@ -31,7 +31,11 @@ declare global {
   }
 }
 
-const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY?.trim() ?? '';
+type TurnstileConfigState =
+  | { status: 'loading'; siteKey: string }
+  | { status: 'ready'; siteKey: string }
+  | { status: 'missing'; siteKey: string }
+  | { status: 'error'; siteKey: string };
 
 export function TurnstileWidget({
   errorMessage,
@@ -44,6 +48,10 @@ export function TurnstileWidget({
   const onTokenChangeRef = useRef(onTokenChange);
   const onWidgetMessageChangeRef = useRef(onWidgetMessageChange);
   const [isScriptReady, setIsScriptReady] = useState(false);
+  const [configState, setConfigState] = useState<TurnstileConfigState>({
+    status: 'loading',
+    siteKey: '',
+  });
 
   useEffect(() => {
     onTokenChangeRef.current = onTokenChange;
@@ -51,12 +59,53 @@ export function TurnstileWidget({
   }, [onTokenChange, onWidgetMessageChange]);
 
   useEffect(() => {
-    if (!turnstileSiteKey || !isScriptReady || !containerRef.current || !window.turnstile || widgetIdRef.current) {
+    const abortController = new AbortController();
+
+    async function loadTurnstileConfig() {
+      try {
+        const response = await fetch('/api/turnstile/config', {
+          cache: 'no-store',
+          signal: abortController.signal,
+        });
+
+        if (!response.ok) {
+          throw new Error(`Turnstile config request failed with ${response.status}.`);
+        }
+
+        const result = (await response.json()) as { siteKey?: string | null };
+        const siteKey = result.siteKey?.trim() ?? '';
+
+        setConfigState(siteKey ? { status: 'ready', siteKey } : { status: 'missing', siteKey: '' });
+      } catch (error) {
+        if ((error as Error).name === 'AbortError') {
+          return;
+        }
+
+        console.error('Turnstile widget configuration could not be loaded.', error);
+        setConfigState({ status: 'error', siteKey: '' });
+      }
+    }
+
+    void loadTurnstileConfig();
+
+    return () => {
+      abortController.abort();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (
+      configState.status !== 'ready' ||
+      !isScriptReady ||
+      !containerRef.current ||
+      !window.turnstile ||
+      widgetIdRef.current
+    ) {
       return;
     }
 
     widgetIdRef.current = window.turnstile.render(containerRef.current, {
-      sitekey: turnstileSiteKey,
+      sitekey: configState.siteKey,
       theme: 'light',
       action: 'contact_form',
       callback: (token) => {
@@ -79,7 +128,7 @@ export function TurnstileWidget({
         widgetIdRef.current = null;
       }
     };
-  }, [isScriptReady]);
+  }, [configState, isScriptReady]);
 
   useEffect(() => {
     if (resetCounter === 0 || !widgetIdRef.current || !window.turnstile) {
@@ -90,10 +139,26 @@ export function TurnstileWidget({
     window.turnstile.reset(widgetIdRef.current);
   }, [resetCounter]);
 
-  if (!turnstileSiteKey) {
+  if (configState.status === 'loading') {
+    return (
+      <div className="rounded-[1.5rem] border border-[color:var(--dd-border)] bg-[color:var(--dd-cream)] px-4 py-4 text-sm leading-7 text-[color:var(--dd-muted)]">
+        Loading human verification...
+      </div>
+    );
+  }
+
+  if (configState.status === 'missing') {
     return (
       <div className="rounded-[1.5rem] border border-[rgba(176,17,22,0.22)] bg-[rgba(176,17,22,0.06)] px-4 py-4 text-sm leading-7 text-[color:var(--dd-copy)]">
-        Cloudflare Turnstile is not configured yet. Add the site key to your local `.env` or deployment environment to enable human verification.
+        Cloudflare Turnstile is not configured yet. Add `NEXT_PUBLIC_TURNSTILE_SITE_KEY` to your local `.env` or deployment environment to enable human verification.
+      </div>
+    );
+  }
+
+  if (configState.status === 'error') {
+    return (
+      <div className="rounded-[1.5rem] border border-[rgba(176,17,22,0.22)] bg-[rgba(176,17,22,0.06)] px-4 py-4 text-sm leading-7 text-[color:var(--dd-copy)]">
+        Cloudflare Turnstile could not load its configuration right now. Refresh the page or verify the deployment environment settings.
       </div>
     );
   }

@@ -49,13 +49,15 @@
 - Fixed Dockerfile from development shell to proper multi-stage production build (deps → builder → runner) for local Docker use.
 - Fixed `.dockerignore` to include `pnpm-lock.yaml` which is required for `pnpm install --frozen-lockfile`.
 - Fixed Azure deployment workflow: simplified startup.sh to just run `node server.js`, disabled Oryx build with `SCM_DO_BUILD_DURING_DEPLOYMENT=false`, and set `HOSTNAME=0.0.0.0` and `PORT=8080` environment variables for Next.js server.
+- Fixed the Turnstile production configuration path by moving the public site key lookup off the client build-time bundle and onto a runtime `/api/turnstile/config` endpoint that reads App Service environment settings on demand.
+- Added focused Turnstile configuration tests and re-ran `pnpm check` plus `pnpm build` in Docker, confirming the app now builds with dynamic `/api/contact` and `/api/turnstile/config` routes.
 
 ## In Progress
-- Azure App Service deployment fix — testing simplified standalone deployment.
+- Azure deployment verification — confirm the Turnstile widget now renders from App Service runtime settings after the next deploy.
 
 ## Next Up
-- Verify deployment: check App Service log stream for startup success and homepage loading at https://devildog-webapp-appservice.azurewebsites.us
-- If startup succeeds, test contact form end-to-end (Turnstile + email delivery).
+- Verify deployment: confirm the Turnstile widget renders on Azure when `NEXT_PUBLIC_TURNSTILE_SITE_KEY` is present only in App Service settings.
+- Test the contact form end-to-end in production (Turnstile + email delivery).
 - After confirmed live deployment, rotate SendGrid API key and Turnstile secret keys for security.
 - Add production environment approval gate in GitHub Actions for manual deployment control.
 
@@ -91,5 +93,5 @@
 
 ## Notes for Next Session
 - What was just finished: Fixed the Azure deployment failure. Root causes: standalone pnpm symlinks don't work on App Service, Oryx build interfering, missing HOSTNAME/PORT env vars. Fixes: simplified startup.sh to just `node server.js`, disabled Oryx build, added HOSTNAME and PORT app settings, updated Dockerfile for multi-stage builds (local Docker dev).
-- What should happen next: Commit and push to trigger new deployment. Watch App Service logs for successful container start with `node server.js` running on port 8080. Verify homepage loads at the Azure URL.
+- What should happen next: Push the Turnstile runtime-config fix, verify the widget appears on Azure when `NEXT_PUBLIC_TURNSTILE_SITE_KEY` is present in App Service settings, and then run a full production contact-form test.
 - Risks / caution areas: Deployment pipeline runs on every push to main; once confirmed working, consider adding production environment approval gate. SendGrid and Turnstile secrets were visible in conversation history — prioritize rotation after live verification.
