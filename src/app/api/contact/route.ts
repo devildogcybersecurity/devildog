@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-import { sendContactEmail, getSendGridConfig } from '@/features/contact/sendgrid';
+import { sendContactEmail, getPostmarkConfig } from '@/features/contact/postmark';
 import { verifyTurnstileToken } from '@/features/contact/turnstile';
 import { validateContactFormInput } from '@/features/contact/contactValidation';
 
@@ -80,10 +80,10 @@ export async function POST(request: Request) {
     );
   }
 
-  const configResult = getSendGridConfig();
+  const configResult = getPostmarkConfig();
 
   if (!configResult.isConfigured) {
-    console.warn('Contact form is missing SendGrid configuration.', configResult.missing);
+    console.warn('Contact form is missing Postmark configuration.', configResult.missing);
 
     return NextResponse.json(
       {

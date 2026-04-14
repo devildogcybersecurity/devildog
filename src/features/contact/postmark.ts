@@ -1,15 +1,20 @@
 import type { ContactFormInput } from '@/features/contact/contactValidation';
 
-const sendGridApiUrl = 'https://api.sendgrid.com/v3/mail/send';
+const postmarkApiUrl = 'https://api.postmarkapp.com/email';
 const defaultFromName = 'DevilDog Cybersecurity Website';
 
 type ContactEmailInput = Omit<ContactFormInput, 'turnstileToken'>;
 
-type SendGridConfig = {
-  apiKey: string;
+type PostmarkConfig = {
+  serverToken: string;
   fromEmail: string;
   toEmail: string;
   fromName: string;
+};
+
+type PostmarkErrorResponse = {
+  ErrorCode?: number;
+  Message?: string;
 };
 
 function escapeHtml(value: string) {
@@ -21,14 +26,18 @@ function escapeHtml(value: string) {
     .replaceAll("'", '&#39;');
 }
 
-export function getSendGridConfig() {
-  const apiKey = process.env.SENDGRID_API_KEY?.trim() ?? '';
-  const fromEmail = process.env.SENDGRID_FROM_EMAIL?.trim() ?? '';
+function formatMailbox(email: string, name: string) {
+  return name ? `${name} <${email}>` : email;
+}
+
+export function getPostmarkConfig() {
+  const serverToken = process.env.POSTMARK_SERVER_TOKEN?.trim() ?? '';
+  const fromEmail = process.env.POSTMARK_FROM_EMAIL?.trim() ?? '';
   const toEmail = process.env.CONTACT_EMAIL_TO?.trim() ?? '';
 
   const missing = [
-    !apiKey ? 'SENDGRID_API_KEY' : null,
-    !fromEmail ? 'SENDGRID_FROM_EMAIL' : null,
+    !serverToken ? 'POSTMARK_SERVER_TOKEN' : null,
+    !fromEmail ? 'POSTMARK_FROM_EMAIL' : null,
     !toEmail ? 'CONTACT_EMAIL_TO' : null,
   ].filter(Boolean) as string[];
 
@@ -42,11 +51,11 @@ export function getSendGridConfig() {
   return {
     isConfigured: true as const,
     config: {
-      apiKey,
+      serverToken,
       fromEmail,
       toEmail,
       fromName: defaultFromName,
-    } satisfies SendGridConfig,
+    } satisfies PostmarkConfig,
   };
 }
 
@@ -77,50 +86,50 @@ function buildHtmlBody(data: ContactEmailInput) {
 }
 
 export async function sendContactEmail(data: ContactEmailInput) {
-  const configResult = getSendGridConfig();
+  const configResult = getPostmarkConfig();
 
   if (!configResult.isConfigured) {
-    throw new Error(`Missing SendGrid configuration: ${configResult.missing.join(', ')}`);
+    throw new Error(`Missing Postmark configuration: ${configResult.missing.join(', ')}`);
   }
 
-  const { apiKey, fromEmail, fromName, toEmail } = configResult.config;
+  const { serverToken, fromEmail, fromName, toEmail } = configResult.config;
 
-  const response = await fetch(sendGridApiUrl, {
+  const response = await fetch(postmarkApiUrl, {
     method: 'POST',
     headers: {
-      Authorization: `Bearer ${apiKey}`,
+      Accept: 'application/json',
       'Content-Type': 'application/json',
+      'X-Postmark-Server-Token': serverToken,
     },
     body: JSON.stringify({
-      personalizations: [
-        {
-          to: [{ email: toEmail }],
-          subject: `DevilDog website inquiry from ${data.name}`,
-        },
-      ],
-      from: {
-        email: fromEmail,
-        name: fromName,
-      },
-      reply_to: {
-        email: data.email,
-        name: data.name,
-      },
-      content: [
-        {
-          type: 'text/plain',
-          value: buildTextBody(data),
-        },
-        {
-          type: 'text/html',
-          value: buildHtmlBody(data),
-        },
-      ],
+      From: formatMailbox(fromEmail, fromName),
+      HtmlBody: buildHtmlBody(data),
+      ReplyTo: data.email,
+      Subject: `DevilDog website inquiry from ${data.name}`,
+      TextBody: buildTextBody(data),
+      To: toEmail,
     }),
   });
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(`SendGrid request failed with status ${response.status}: ${errorText}`);
+
+    let detail = errorText;
+
+    if (errorText) {
+      try {
+        const parsed = JSON.parse(errorText) as PostmarkErrorResponse;
+        if (parsed.Message) {
+          const errorCodeSuffix =
+            typeof parsed.ErrorCode === 'number' ? ` (Postmark error ${parsed.ErrorCode})` : '';
+
+          detail = `${parsed.Message}${errorCodeSuffix}`;
+        }
+      } catch {
+        // Leave the raw response text in place when Postmark does not return JSON.
+      }
+    }
+
+    throw new Error(`Postmark request failed with status ${response.status}: ${detail}`);
   }
 }

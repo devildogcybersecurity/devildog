@@ -4,10 +4,10 @@
 - Name: mvp-template
 - Template Type: Static website baseline
 - Current Branch: main
-- Last Updated: 2026-04-13
+- Last Updated: 2026-04-14
 
 ## Current Phase
-- Public marketing site with SendGrid-ready contact workflow verified in Docker
+- Public marketing site with Turnstile-protected Postmark contact workflow verified in Docker
 
 ## Completed
 - Reviewed repository guidance, architecture notes, and current code structure.
@@ -30,10 +30,10 @@
 - Polished the shared DevilDog UI so dark surfaces use light text, light surfaces use dark text, menu disclosure controls no longer fall back to native dark markers, and the home/about side-by-side panels sit with better centered spacing.
 - Re-ran `pnpm check` and `pnpm build` in Docker after the polish pass and confirmed the static export still succeeds for 29 pages.
 - Fixed the remaining unreadable Contact DevilDog CTA treatment, rewired sitewide contact links to a dedicated `/contact` page, and added a styled Tailwind contact form with client-side validation for name, email, company name, and message.
-- Added a server-side `/api/contact` route that validates submissions and sends email through SendGrid using server-only environment variables, plus new tests for the shared contact validation logic.
-- Updated `.env.example`, Docker Compose, and the Next.js build configuration so the app can accept SendGrid settings in development and production and compile a secure contact endpoint.
+- Added a server-side `/api/contact` route that validates submissions and sends email through a server-only transactional email provider, plus new tests for the shared contact validation logic.
+- Updated `.env.example`, Docker Compose, and the Next.js build configuration so the app can accept secure contact-email settings in development and production and compile a secure contact endpoint.
 - Re-ran `pnpm check` and `pnpm build` in Docker after the contact workflow milestone and confirmed the build now includes `/contact` plus a dynamic `/api/contact` route.
-- Added Cloudflare Turnstile protection to the contact form with a client-rendered verification widget, token-aware validation, and server-side Turnstile `siteverify` checks that must pass before SendGrid email is sent.
+- Added Cloudflare Turnstile protection to the contact form with a client-rendered verification widget, token-aware validation, and server-side Turnstile `siteverify` checks that must pass before outbound contact email is sent.
 - Expanded the contact validation tests for Turnstile token requirements and updated `.env.example` plus Docker Compose with safe Turnstile placeholders instead of tracked secrets.
 - Re-ran `pnpm check` and `pnpm build` in Docker after the Turnstile milestone and confirmed the contact page still builds cleanly with the protected `/api/contact` route.
 - Removed the extra "What Happens Next" panel from the contact page, simplified the top navigation by dropping the duplicate Home link, and fixed the shared Contact DevilDog CTA styling so button text stays readable on the footer and page-level Next Step panels.
@@ -51,14 +51,16 @@
 - Fixed Azure deployment workflow: simplified startup.sh to just run `node server.js`, disabled Oryx build with `SCM_DO_BUILD_DURING_DEPLOYMENT=false`, and set `HOSTNAME=0.0.0.0` and `PORT=8080` environment variables for Next.js server.
 - Fixed the Turnstile production configuration path by moving the public site key lookup off the client build-time bundle and onto a runtime `/api/turnstile/config` endpoint that reads App Service environment settings on demand.
 - Added focused Turnstile configuration tests and re-ran `pnpm check` plus `pnpm build` in Docker, confirming the app now builds with dynamic `/api/contact` and `/api/turnstile/config` routes.
+- Replaced SendGrid contact delivery with Postmark, renamed the secure email settings to `POSTMARK_SERVER_TOKEN` and `POSTMARK_FROM_EMAIL`, updated the local env template plus Docker Compose wiring, added focused Postmark config tests, and re-ran `pnpm check` plus `pnpm build` successfully in Docker.
 
 ## In Progress
-- Azure deployment verification — confirm the Turnstile widget now renders from App Service runtime settings after the next deploy.
+- Azure production verification — confirm the Turnstile widget renders from App Service runtime settings and that Postmark delivers contact-form email after the next deploy.
 
 ## Next Up
+- Configure Azure App Service settings for `POSTMARK_SERVER_TOKEN` and `POSTMARK_FROM_EMAIL`, and remove the old `SENDGRID_*` settings if they still exist.
 - Verify deployment: confirm the Turnstile widget renders on Azure when `NEXT_PUBLIC_TURNSTILE_SITE_KEY` is present only in App Service settings.
-- Test the contact form end-to-end in production (Turnstile + email delivery).
-- After confirmed live deployment, rotate SendGrid API key and Turnstile secret keys for security.
+- Test the contact form end-to-end in production (Turnstile + Postmark delivery).
+- Remove any leftover SendGrid secrets from GitHub or Azure and rotate the retired SendGrid key if it was ever used outside local development.
 - Add production environment approval gate in GitHub Actions for manual deployment control.
 
 ## Blockers
@@ -72,11 +74,14 @@
   - Reason: Local container support is still useful, but PostgreSQL and auth-specific setup are unnecessary after the conversion.
   - Date: 2026-04-11
 - Decision: Introduce a minimal server-side Next.js endpoint for the contact form instead of keeping strict static export.
-  - Reason: SendGrid requires the API key to stay on the server, so secure email delivery needs a server-capable runtime even though the rest of the site remains static-first.
+  - Reason: The email provider credentials must stay on the server, so secure email delivery needs a server-capable runtime even though the rest of the site remains static-first.
   - Date: 2026-04-12
 - Decision: Protect the contact form with Cloudflare Turnstile and verify tokens on the server before attempting email delivery.
-  - Reason: Bot resistance needs to happen before the SendGrid send step, and server-side verification prevents forged or replayed client submissions from bypassing the widget.
+  - Reason: Bot resistance needs to happen before the outbound email send step, and server-side verification prevents forged or replayed client submissions from bypassing the widget.
   - Date: 2026-04-12
+- Decision: Replace SendGrid with Postmark for outbound contact email delivery.
+  - Reason: Postmark is the chosen transactional email provider for the contact workflow and only requires a lightweight server-side API integration.
+  - Date: 2026-04-14
 
 ## Commands
 - Install: pnpm install
@@ -92,6 +97,6 @@
 - Build: pnpm build
 
 ## Notes for Next Session
-- What was just finished: Fixed the Azure deployment failure. Root causes: standalone pnpm symlinks don't work on App Service, Oryx build interfering, missing HOSTNAME/PORT env vars. Fixes: simplified startup.sh to just `node server.js`, disabled Oryx build, added HOSTNAME and PORT app settings, updated Dockerfile for multi-stage builds (local Docker dev).
-- What should happen next: Push the Turnstile runtime-config fix, verify the widget appears on Azure when `NEXT_PUBLIC_TURNSTILE_SITE_KEY` is present in App Service settings, and then run a full production contact-form test.
-- Risks / caution areas: Deployment pipeline runs on every push to main; once confirmed working, consider adding production environment approval gate. SendGrid and Turnstile secrets were visible in conversation history — prioritize rotation after live verification.
+- What was just finished: Replaced the contact email provider from SendGrid to Postmark, updated the route imports and env contract (`POSTMARK_SERVER_TOKEN`, `POSTMARK_FROM_EMAIL`, `CONTACT_EMAIL_TO`), refreshed the local `.env` placeholder plus tracked `.env.example`/Docker wiring, added a Postmark config test, and verified `pnpm check` plus `pnpm build` in Docker.
+- What should happen next: Add the new Postmark app settings in Azure App Service, remove any lingering SendGrid settings, verify the Turnstile widget still loads from runtime config, and run a full production contact-form test.
+- Risks / caution areas: Deployment pipeline runs on every push to main; once confirmed working, consider adding production environment approval gate. Production email will fail until the Postmark sender is verified and the App Service settings are updated. If legacy SendGrid credentials were used anywhere outside local development, remove and rotate them.

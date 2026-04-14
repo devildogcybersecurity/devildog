@@ -5,7 +5,7 @@ export const contactPageContent = {
     'Use the contact form to tell DevilDog what is changing in your environment, what kind of compliance or cybersecurity pressure you are facing, and where you need help next.',
   supportingPoints: [
     'Share your current challenge, timeline, and business context in one place.',
-    'Route the message to DevilDog through a secure server-side SendGrid workflow.',
+    'Route the message to DevilDog through a secure server-side Postmark workflow.',
     'Keep the process lightweight while preserving room for a deeper follow-up conversation.',
   ],
   responseHighlights: [

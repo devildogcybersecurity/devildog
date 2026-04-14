@@ -225,8 +225,8 @@ export function ContactForm() {
         <div className="flex flex-wrap items-center justify-between gap-4">
           <p className="max-w-xl text-sm leading-7 text-[color:var(--dd-muted)]">
             The form sends your message to DevilDog by email after Cloudflare Turnstile and the
-            server both verify the submission. The SendGrid and Turnstile secret keys stay on the
-            server and are never exposed in the browser.
+            server both verify the submission. The Postmark server token and Turnstile secret key
+            stay on the server and are never exposed in the browser.
           </p>
           <button
             type="submit"
